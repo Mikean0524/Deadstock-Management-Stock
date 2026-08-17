@@ -1,0 +1,275 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% -----------------------------------------------------
+% bvraghav-tiet-ucs503p-article.sty
+% -----------------------------------------------------
+
+% Variable: Lab Instructor
+\makeatletter \newcommand{\BvrSetLabInstructor}[1]{%
+  \gdef\Bvr@LabInstructor{#1}}
+% default
+\newcommand{\Bvr@LabInstructor}{Dr. Raghav %
+  B. Venkataramaiyer}
+% public accessor
+\newcommand{\BvrLabInstructorValue}{\Bvr@LabInstructor}
+\makeatother
+
+% Add subtitle
+\usepackage{titling}
+% -- Set title bold
+\pretitle{\begin{center}\bfseries\fontsize{18bp}{18bp}\selectfont}
+\makeatletter
+\newcommand{\BvrSubtitle}[1]{%
+  \posttitle{%
+    \par\end{center}
+    \begin{center}\large#1\end{center}
+    \vskip 0.5em}%
+}
+\makeatother
+
+% Hints in the section title(s)
+\newcommand{\BvrHint}[1]{%
+  {\normalfont\normalsize\itshape\hfill #1}}
+
+% -----------------------------------------------------
+
+\title{Deadstock Management System}
+
+\BvrSetLabInstructor{Dr. Asif}
+
+\BvrSubtitle{%
+  Project Report for UCS503P  \\
+  Submitted to: \BvrLabInstructorValue \\ \bfseries
+  Thapar Institute of Engineering and Technology%
+}
+
+\author{
+  Aryan Gupta, CSED%
+  \thanks{Roll No: \texttt{1024030455}, %
+    Email: \texttt{agupta\_be24\@thapar.edu}}
+  \and
+  Abhilakshya Puri, CSED%
+  \thanks{Roll No: \texttt{1024030445}, %
+    Email: \texttt{apuri\_be24\@thapar.edu}}
+  \and
+  Farhan Kansal, CSED%
+  \thanks{Roll No: \texttt{1024030451}, %
+    Email: \texttt{fkansal\_be24\@thapar.edu}}
+}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Higher-order goal%
+  \BvrHint{\ldots secondary framing}}
+This project aims to reduce capital wastage and material
+waste in retail supply chains by giving unsold
+(``deadstock'') inventory a structured path back into the
+market. While the broader goal is sustainable, efficient
+retail, the immediate engineering objective is a
+deployable web platform that lets vendors track, verify,
+and resell aging stock to other buyers.
+
+\section{Time-to-value %
+\BvrHint{\ldots primary heuristic}}
+\begin{itemize}[leftmargin=0.7cm]
+    \item We will deliver meaningful increments quickly by prototyping the core \emph{list-and-browse} workflow first, before layering on verification and compliance checks.
+    \item We will prioritize fast feedback over perfection by using weekly iterations and CI-backed automation early to reduce release friction.
+    \item Success is defined by what can be delivered and measured in the first iteration (a working vendor-to-buyer listing loop), then improved based on user feedback.
+\end{itemize}
+
+\section{Problem Statement}
+An estimated 20--30\% of retail inventory value in India
+sits idle as slow-moving or dead stock annually, and
+over 2,00,000 licensed liquor and FMCG retailers alone
+face recurring dead-stock write-offs each year. Vendors
+currently have no structured way to recover this trapped
+capital. Common pain points include:
+\begin{itemize}[leftmargin=0.7cm]
+    \item \textbf{No real-time visibility:} vendors track stock in spreadsheets or registers, so items are only noticed \emph{after} they've become deadstock.
+    \item \textbf{No way to verify deadstock:} buyers cannot trust a listing without proof of condition, quantity, or authenticity, since none of this is independently confirmed today.
+    \item \textbf{No resale marketplace:} even genuinely resellable stock has no dedicated channel connecting vendors with willing buyers.
+    \item \textbf{Compliance risk:} regulated categories (e.g., licensed liquor) cannot resell freely; any resale channel must respect licensing rules.
+\end{itemize}
+
+\textbf{Why this matters now (contextual relevance):} unsold stock is routinely discarded, discounted below cost, or destroyed --- a direct loss to the vendor and to the environment --- while a trusted resale channel could recover that value instead.
+
+\section{Proposed Solution %
+\BvrHint{\ldots Software Proposition}}
+\subsection{Overview}
+Build a \textbf{web-based verified marketplace} where
+vendors track, audit, and resell deadstock inventory to
+other buyers, with the following components:
+\begin{itemize}[leftmargin=0.7cm]
+    \item \textbf{Vendor inventory dashboard:} digital stock logging with automated aging alerts flagging items drifting toward deadstock status.
+    \item \textbf{Verification layer:} photo/batch proof plus rule checks confirming condition, quantity, and authenticity before a listing goes live.
+    \item \textbf{Marketplace listings:} verified deadstock published, categorized, and priced for discovery by other buyers.
+    \item \textbf{Transaction flow:} buyers browse trusted listings and purchase directly from vendors.
+    \item \textbf{Compliance guardrails:} category-aware rules so regulated stock (e.g., licensed liquor) cannot be listed outside permitted channels.
+\end{itemize}
+
+\subsection{Core workflow}
+\begin{enumerate}[leftmargin=0.7cm]
+    \item Vendor logs stock digitally; the system flags items aging toward deadstock status.
+    \item Vendor submits a deadstock item for verification (photo/batch proof).
+    \item System applies rule checks (completeness, category compliance) and a human/automated review confirms the listing.
+    \item Verified listing is published to the marketplace; buyers browse, filter, and purchase.
+    \item Vendor and buyer view transaction and listing status through to completion.
+\end{enumerate}
+
+\subsection{Operational constraints for an educational, tier-2/3 setting}
+\begin{itemize}[leftmargin=0.7cm]
+    \item Keep the solution usable on low-to-mid range devices via responsive web design, since many vendors operate small retail outlets.
+    \item Avoid dependence on advanced research algorithms (e.g., no computer-vision authenticity detection in scope); rely on structured proof plus rule-based checks.
+    \item Design for deployability using common web hosting and managed databases.
+\end{itemize}
+
+\section{Solution Approach %
+\BvrHint{\ldots Engineering focus}}
+This is an engineering course project, so we focus on
+scalable marketplace and workflow aspects rather than
+novel algorithm research.
+
+\subsection{Verification assistance %
+\BvrHint{\ldots non-research}}
+Verification will be checklist- and rule-based, not
+ML-driven:
+\begin{itemize}[leftmargin=0.7cm]
+    \item Require photo/batch proof and structured fields (category, quantity, condition) at listing time.
+    \item Apply deterministic rule checks (e.g., category-specific compliance rules, completeness checks) before publishing.
+    \item Flag ambiguous or regulated-category listings for manual review; never auto-publish a regulated item without a pass.
+\end{itemize}
+
+\subsection{Web architecture %
+\BvrHint{\ldots web-based solution}}
+A typical 3-tier web architecture:
+\begin{itemize}[leftmargin=0.7cm]
+    \item \textbf{Frontend:} responsive UI for vendor dashboard, listing creation, and buyer marketplace/browse pages.
+    \item \textbf{Backend API:} authentication, inventory CRUD, verification rule engine, listing and transaction logic.
+    \item \textbf{Database:} vendors, buyers, inventory items, verification records, listings, transaction history.
+\end{itemize}
+
+\subsection{CI/CD and fast delivery enabler}
+CI/CD will be used to:
+\begin{itemize}[leftmargin=0.7cm]
+    \item Automatically build and run tests on every change.
+    \item Produce repeatable deployment artifacts to staging.
+    \item Enable safe and frequent releases of incremental features.
+\end{itemize}
+
+\section{Evaluation Criterion %
+\BvrHint{\ldots measurable and attributable}}
+We define success using measurable metrics tied to the
+core workflow.
+
+\subsection{Primary evaluation metric}
+\textbf{Time-to-listing (TTL):} time between a vendor
+flagging an item as deadstock and it appearing as a
+verified, live marketplace listing.
+\begin{itemize}[leftmargin=0.7cm]
+    \item Target: median TTL $\le$ 24 hours during pilot window.
+    \item Attribution: measured from database timestamps (item flagged vs. listing published).
+\end{itemize}
+
+\subsection{Secondary evaluation metrics}
+\begin{itemize}[leftmargin=0.7cm]
+    \item \textbf{Recovery rate:} percentage of listed deadstock items sold within the pilot window.
+    \item \textbf{Verification pass rate:} percentage of submitted listings passing rule checks without manual escalation.
+    \item \textbf{Buyer trust:} buyer-reported confidence in listing accuracy using a simple 1--5 feedback question.
+    \item \textbf{Reliability:} availability of staging/production for browsing and listing during business hours (e.g., $\ge$ 99\% uptime in pilot).
+\end{itemize}
+
+\subsection{Pilot validation plan %
+\BvrHint{\ldots high-level}}
+\begin{itemize}[leftmargin=0.7cm]
+    \item Recruit 10--20 pilot vendors and a matching pool of buyers (simulated buyer roles if real ones are unavailable).
+    \item Compare recovery rate and time-to-listing before/after within the iteration window, using baseline estimates from vendor interviews.
+\end{itemize}
+
+\section{Scalability %
+\BvrHint{\ldots with foresight}}
+The proposition should scale in both theoretical and
+practical senses.
+
+\begin{enumerate}[leftmargin=0.7cm]
+    \item \textbf{Scalable (theoretically):} The system should support growth in number of vendors, listings, and concurrent buyers by:
+    \begin{itemize}[leftmargin=0.7cm]
+        \item decoupling components (frontend/backend),
+        \item enabling pagination and indexing for common marketplace queries,
+        \item using stateless API design.
+    \end{itemize}
+
+    \item \textbf{Operationally deployable (practically):} The system should run on common web hosting:
+    \begin{itemize}[leftmargin=0.7cm]
+        \item managed database,
+        \item containerized or platform-hosted deployment,
+        \item CI/CD pipeline for staging/production.
+    \end{itemize}
+\end{enumerate}
+
+\section{Engine availability heuristic}
+A mature set of ``engines'' (tooling/services) is
+available to implement this as a web-based project:
+\begin{itemize}[leftmargin=0.7cm]
+    \item Web framework for REST APIs and templated/reactive pages.
+    \item Managed relational database (for structured inventory/listing/transaction data).
+    \item Authentication approach (token-based or session-based) for vendor and buyer accounts.
+    \item Object storage for verification photos and batch-proof documents.
+    \item Test framework for unit/integration tests.
+    \item CI runner and staging deployment target.
+\end{itemize}
+We will use these mature components to focus on
+marketplace design, verification correctness, and
+measurement rather than inventing new infrastructure.
+
+\section{Project scope and deliverables %
+\BvrHint{\ldots iteration-friendly}}
+\subsection{Initial deliverable %
+\BvrHint{\ldots first iteration}}
+\begin{itemize}[leftmargin=0.7cm]
+    \item Vendor inventory entry + aging alert logic
+    \item Listing creation with photo/proof upload
+    \item Rule-based verification checklist (non-regulated categories)
+    \item Buyer-facing browse/search page for live listings
+    \item Basic logging and timestamps for TTL measurement
+    \item CI: build + backend unit tests + linting
+    \item CD to staging with a single command or pipeline job
+\end{itemize}
+
+\subsection{Subsequent deliverables}
+\begin{itemize}[leftmargin=0.7cm]
+    \item Regulated-category compliance rules and manual-review escalation path
+    \item Transaction/purchase flow between buyer and vendor
+    \item Vendor and admin dashboards for recovery-rate metrics
+    \item Improved search/filtering and indexed queries for scale readiness
+\end{itemize}
+
+\section{Risks and mitigations}
+\begin{itemize}[leftmargin=0.7cm]
+    \item \textbf{Regulatory risk:} restrict regulated categories (e.g., licensed liquor) from auto-publishing; require manual compliance review before those listings go live.
+    \item \textbf{Trust/fraud risk:} require photo/batch proof at listing time and keep an audit trail of verification decisions.
+    \item \textbf{Vendor adoption:} keep listing creation to a minimal number of steps; provide clear aging alerts so vendors act before stock is a total write-off.
+    \item \textbf{Evaluation measurement ambiguity:} instrument timestamps and define clear listing-status transitions before development begins.
+\end{itemize}
+
+\section{Summary}
+This project proposes a deployable web marketplace that
+turns unsold vendor stock into recovered revenue, by
+combining inventory tracking, rule-based verification,
+and a buyer-facing resale channel. It meets the course
+criteria by emphasizing time-to-value through rapid
+iterations, implementing CI/CD to support frequent safe
+releases, and using measurable evaluation criteria
+(especially time-to-listing and recovery rate). It
+remains focused on engineering workflow, trust, and
+scalability readiness rather than research-driven
+novelty.
+
+\end{document}

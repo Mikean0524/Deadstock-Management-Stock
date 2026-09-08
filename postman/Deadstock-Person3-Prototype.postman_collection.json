@@ -1,0 +1,12 @@
+{
+  "info": { "name": "Deadstock — Person 3 Prototype", "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json" },
+  "variable": [{ "key": "baseUrl", "value": "http://localhost:4000" }, { "key": "vendorToken", "value": "" }, { "key": "adminToken", "value": "" }, { "key": "inventoryId", "value": "" }, { "key": "verificationId", "value": "" }],
+  "item": [
+    { "name": "Vendor — upload proof", "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{vendorToken}}" }], "body": { "mode": "formdata", "formdata": [{ "key": "proof", "type": "file", "src": "" }] }, "url": "{{baseUrl}}/api/verification/{{inventoryId}}/proof" } },
+    { "name": "Vendor — submit verification", "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{vendorToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"proofUrl\": \"https://example.com/proof.jpg\",\n  \"notes\": \"Batch proof attached\"\n}" }, "url": "{{baseUrl}}/api/verification/{{inventoryId}}/submit" } },
+    { "name": "Admin — manual review queue", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }], "url": "{{baseUrl}}/api/verification/admin/queue" } },
+    { "name": "Admin — approve/reject", "request": { "method": "PATCH", "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"decision\": \"APPROVE\" }" }, "url": "{{baseUrl}}/api/verification/{{verificationId}}/review" } },
+    { "name": "Vendor — publish verified listing", "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{vendorToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"inventoryId\": \"{{inventoryId}}\",\n  \"title\": \"Verified surplus chairs\",\n  \"description\": \"Good-condition surplus office chairs.\",\n  \"price\": 850,\n  \"quantity\": 12\n}" }, "url": "{{baseUrl}}/api/listings" } },
+    { "name": "Buyer — browse marketplace", "request": { "method": "GET", "url": "{{baseUrl}}/api/listings/marketplace?search=chairs" } }
+  ]
+}

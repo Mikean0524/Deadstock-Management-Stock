@@ -1,11 +1,17 @@
 import express from "express";
 import { ZodError } from "zod";
+import { authenticateRequest } from "./modules/auth/middleware.js";
+import { authRouter } from "./modules/auth/routes.js";
+import { inventoryRouter } from "./modules/inventory/routes.js";
 import { listingRouter } from "./modules/listings/routes.js";
 import { verificationRouter } from "./modules/verification/routes.js";
 
 export const app = express();
 app.use(express.json());
+app.use(authenticateRequest);
 app.get("/api/health", (_req, res) => res.json({ success: true, data: { status: "ok" } }));
+app.use("/api/auth", authRouter);
+app.use("/api/inventory", inventoryRouter);
 app.use("/api/verification", verificationRouter);
 app.use("/api/listings", listingRouter);
 app.use((error: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {

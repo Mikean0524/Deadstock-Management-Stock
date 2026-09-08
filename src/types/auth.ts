@@ -15,7 +15,7 @@ declare global {
   }
 }
 
-// Person 2's JWT middleware should populate req.user with this shape.
+// Aryan's JWT middleware populates req.user with this shape.
 export const requireAuth: RequestHandler = (req, res, next) => {
   if (!req.user) return res.status(401).json({ success: false, error: { message: "Authentication required" } });
   next();

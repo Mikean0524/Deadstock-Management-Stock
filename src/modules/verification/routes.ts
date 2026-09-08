@@ -1,12 +1,12 @@
-import { PrismaClient } from "@prisma/client";
 import { Router } from "express";
+import { Prisma } from "@prisma/client";
 import multer from "multer";
 import { z } from "zod";
+import { prisma } from "../../config/prisma.js";
 import { requireAuth, requireRole } from "../../types/auth.js";
 import { runVerificationRules } from "./rule-engine.js";
 import { uploadProof } from "./storage.js";
 
-const prisma = new PrismaClient();
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
 const submitSchema = z.object({ proofUrl: z.string().url().optional(), notes: z.string().max(1000).optional() });
 const reviewSchema = z.object({ decision: z.enum(["APPROVE", "REJECT"]), notes: z.string().max(1000).optional() });
@@ -15,8 +15,10 @@ export const verificationRouter = Router();
 
 verificationRouter.post("/:inventoryId/submit", requireAuth, requireRole("VENDOR"), async (req, res, next) => {
   try {
+    const inventoryId = req.params.inventoryId;
+    if (typeof inventoryId !== "string") return res.status(400).json({ success: false, error: { message: "Invalid inventory ID" } });
     const body = submitSchema.parse(req.body);
-    const inventory = await prisma.inventoryItem.findFirst({ where: { id: req.params.inventoryId, vendor_id: req.user!.id } });
+    const inventory = await prisma.inventoryItem.findFirst({ where: { id: inventoryId, vendor_id: req.user!.id } });
     if (!inventory) return res.status(404).json({ success: false, error: { message: "Inventory item not found" } });
     if (!body.proofUrl) return res.status(400).json({ success: false, error: { message: "proofUrl is required" } });
 
@@ -24,7 +26,7 @@ verificationRouter.post("/:inventoryId/submit", requireAuth, requireRole("VENDOR
     // PASS is the explainable rule decision; a non-regulated passing item is then
     // automatically VERIFIED, while anything ambiguous remains in manual review.
     const verificationStatus = result.status === "PASS" ? "VERIFIED" : result.status;
-    const record = await prisma.verificationRecord.create({ data: { inventory_id: inventory.id, submitted_by: req.user!.id, proof_url: body.proofUrl, notes: body.notes, verification_status: verificationStatus, rule_result: { decision: result.status, checks: result.checks } } });
+    const record = await prisma.verificationRecord.create({ data: { inventory_id: inventory.id, submitted_by: req.user!.id, proof_url: body.proofUrl, notes: body.notes, verification_status: verificationStatus, rule_result: { decision: result.status, checks: result.checks } as unknown as Prisma.InputJsonValue } });
     await prisma.inventoryItem.update({ where: { id: inventory.id }, data: { status: "SUBMITTED_FOR_VERIFICATION" } });
     res.status(201).json({ success: true, data: { verificationId: record.id, inventoryId: inventory.id, ruleResult: result.status, verificationStatus, checks: result.checks } });
   } catch (error) { next(error); }
@@ -32,8 +34,10 @@ verificationRouter.post("/:inventoryId/submit", requireAuth, requireRole("VENDOR
 
 verificationRouter.post("/:inventoryId/proof", requireAuth, requireRole("VENDOR"), upload.single("proof"), async (req, res, next) => {
   try {
+    const inventoryId = req.params.inventoryId;
+    if (typeof inventoryId !== "string") return res.status(400).json({ success: false, error: { message: "Invalid inventory ID" } });
     if (!req.file) return res.status(400).json({ success: false, error: { message: "A proof file is required" } });
-    const inventory = await prisma.inventoryItem.findFirst({ where: { id: req.params.inventoryId, vendor_id: req.user!.id }, select: { id: true } });
+    const inventory = await prisma.inventoryItem.findFirst({ where: { id: inventoryId, vendor_id: req.user!.id }, select: { id: true } });
     if (!inventory) return res.status(404).json({ success: false, error: { message: "Inventory item not found" } });
     res.status(201).json({ success: true, data: { proofUrl: await uploadProof(req.file, inventory.id) } });
   } catch (error) { next(error); }
@@ -48,8 +52,10 @@ verificationRouter.get("/admin/queue", requireAuth, requireRole("ADMIN"), async 
 
 verificationRouter.patch("/:verificationId/review", requireAuth, requireRole("ADMIN"), async (req, res, next) => {
   try {
+    const verificationId = req.params.verificationId;
+    if (typeof verificationId !== "string") return res.status(400).json({ success: false, error: { message: "Invalid verification ID" } });
     const body = reviewSchema.parse(req.body);
-    const record = await prisma.verificationRecord.findUnique({ where: { id: req.params.verificationId } });
+    const record = await prisma.verificationRecord.findUnique({ where: { id: verificationId } });
     if (!record) return res.status(404).json({ success: false, error: { message: "Verification record not found" } });
     if (record.verification_status !== "MANUAL_REVIEW") return res.status(409).json({ success: false, error: { message: "Only manual-review records can be decided" } });
     const status = body.decision === "APPROVE" ? "VERIFIED" : "REJECT";

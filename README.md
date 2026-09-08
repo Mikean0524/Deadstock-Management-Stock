@@ -4,15 +4,24 @@ Person 3's initial vertical slice: proof upload and deterministic verification, 
 
 ## Coordination contract
 
-This code deliberately consumes Person 2's Prisma/Auth foundation. Before running it, Person 2 must provide the agreed `inventoryItem`, `verificationRecord`, and `listing` Prisma models with the field and enum names in the shared build specification, plus JWT middleware that assigns `req.user = { id, role }`.
+This code deliberately consumes Aryan's Prisma/Auth foundation. The shared `inventoryItem`, `verificationRecord`, and `listing` Prisma models plus JWT middleware that assigns `req.user = { id, role }` now live in the repo, so the Person 3 slice can sit on top of them.
 
 The precise handoff details are in [docs/person3-integration-contract.md](docs/person3-integration-contract.md).
 
 ## Setup
 
 1. Copy `.env.example` to `.env` and enter the Supabase/PostgreSQL values.
-2. After Person 2 adds the shared Prisma schema, run `npm install`, `npx prisma generate`, then `npm run dev`.
-3. Create a private Supabase Storage bucket named `verification-proofs` (or set `SUPABASE_PROOF_BUCKET`).
+2. Run `npm install`, `npm run db:generate`, `npm run db:migrate`, and `npm run db:seed`.
+3. Run `npm run dev`.
+4. Create a private Supabase Storage bucket named `verification-proofs` (or set `SUPABASE_PROOF_BUCKET`).
+
+Demo accounts created by `npm run db:seed`:
+
+- Vendor: `vendor@example.com` / `Vendor123!`
+- Buyer: `buyer@example.com` / `Buyer123!`
+- Admin: `admin@example.com` / `Admin123!`
+
+Run `npm test` for the unit and API tests, and `npm run typecheck` plus `npm run build` for verification.
 
 ## Person 3 API slice
 
@@ -29,4 +38,4 @@ The prototype intentionally excludes purchase transactions, analytics, payment p
 
 - Rule engine unit tests and the Postman collection in `postman/` can be used immediately.
 - Mock-ready React/Tailwind Admin Review and Buyer Marketplace pages are in `frontend/src/features/person3/`; Person 1 can add them to the shared Vite router now.
-- `person3-api.ts` is the API adapter to switch the screens from mock data to the live API after Person 2 completes authentication, inventory, and Prisma.
+- `person3-api.ts` is the API adapter to switch the screens from mock data to the live API after Aryan completes authentication, inventory, and Prisma.

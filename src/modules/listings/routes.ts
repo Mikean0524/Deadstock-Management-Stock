@@ -1,10 +1,9 @@
-import { PrismaClient } from "@prisma/client";
 import { Router } from "express";
 import { z } from "zod";
+import { prisma } from "../../config/prisma.js";
 import { requireAuth, requireRole } from "../../types/auth.js";
 import { getListingPublicationError } from "./listing-policy.js";
 
-const prisma = new PrismaClient();
 const listingSchema = z.object({ inventoryId: z.string().uuid(), title: z.string().min(3).max(120), description: z.string().min(10).max(2000), price: z.number().nonnegative(), quantity: z.number().int().positive() });
 export const listingRouter = Router();
 

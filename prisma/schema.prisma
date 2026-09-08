@@ -1,0 +1,120 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  VENDOR
+  BUYER
+  ADMIN
+}
+
+enum InventoryCondition {
+  NEW
+  GOOD
+  DAMAGED
+}
+
+enum InventoryStatus {
+  ACTIVE
+  AGING
+  DEADSTOCK_FLAGGED
+  SUBMITTED_FOR_VERIFICATION
+}
+
+enum VerificationStatus {
+  PENDING
+  RULE_CHECK
+  PASS
+  REJECT
+  MANUAL_REVIEW
+  VERIFIED
+}
+
+enum ListingStatus {
+  DRAFT
+  PENDING_VERIFICATION
+  VERIFIED
+  PUBLISHED
+  SOLD
+}
+
+model users {
+  id                   String              @id @default(uuid()) @db.Uuid
+  name                 String
+  email                String              @unique
+  password_hash        String
+  role                 Role
+  created_at           DateTime            @default(now())
+  inventory_items      inventoryItem[]
+  submitted_records    verificationRecord[] @relation("SubmittedBy")
+  reviewed_records     verificationRecord[] @relation("ReviewedBy")
+  listings             listing[]
+
+  @@map("users")
+  @@index([role])
+}
+
+model inventoryItem {
+  id                    String              @id @default(uuid()) @db.Uuid
+  vendor_id             String              @db.Uuid
+  product_name          String
+  category              String
+  quantity              Int
+  purchase_date         DateTime
+  expiry_date           DateTime?
+  condition             InventoryCondition
+  status                InventoryStatus     @default(ACTIVE)
+  created_at            DateTime            @default(now())
+  deadstock_flagged_at  DateTime?
+  vendor                users               @relation(fields: [vendor_id], references: [id], onDelete: Cascade)
+  verification_records  verificationRecord[]
+  listings              listing[]
+
+  @@map("inventory_items")
+  @@index([vendor_id, status])
+  @@index([purchase_date])
+}
+
+model verificationRecord {
+  id                  String            @id @default(uuid()) @db.Uuid
+  inventory_id        String            @db.Uuid
+  submitted_by        String            @db.Uuid
+  proof_url           String
+  verification_status VerificationStatus @default(PENDING)
+  rule_result         Json?
+  notes               String?
+  reviewer_id         String?           @db.Uuid
+  reviewed_at         DateTime?
+  submitted_at        DateTime          @default(now())
+  inventory           inventoryItem     @relation(fields: [inventory_id], references: [id], onDelete: Cascade)
+  submittedBy         users             @relation("SubmittedBy", fields: [submitted_by], references: [id], onDelete: Restrict)
+  reviewer            users?            @relation("ReviewedBy", fields: [reviewer_id], references: [id], onDelete: SetNull)
+
+  @@map("verification_records")
+  @@index([inventory_id, verification_status])
+  @@index([verification_status, submitted_at])
+}
+
+model listing {
+  id               String         @id @default(uuid()) @db.Uuid
+  inventory_id     String         @db.Uuid
+  vendor_id        String         @db.Uuid
+  title            String
+  description      String
+  price            Decimal        @db.Decimal(10, 2)
+  quantity         Int
+  listing_status   ListingStatus   @default(DRAFT)
+  published_at     DateTime?
+  created_at       DateTime       @default(now())
+  inventory        inventoryItem  @relation(fields: [inventory_id], references: [id], onDelete: Cascade)
+  vendor           users          @relation(fields: [vendor_id], references: [id], onDelete: Restrict)
+
+  @@map("listings")
+  @@index([listing_status, published_at])
+  @@index([vendor_id, listing_status])
+}

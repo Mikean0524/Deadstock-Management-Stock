@@ -39,3 +39,7 @@ The prototype intentionally excludes purchase transactions, analytics, payment p
 - Rule engine unit tests and the Postman collection in `postman/` can be used immediately.
 - Mock-ready React/Tailwind Admin Review and Buyer Marketplace pages are in `frontend/src/features/person3/`; Person 1 can add them to the shared Vite router now.
 - `person3-api.ts` is the API adapter to switch the screens from mock data to the live API after Aryan completes authentication, inventory, and Prisma.
+
+## Person 3 demo sequence
+
+After seeding, sign in as the admin and open `GET /api/verification/admin/queue` to review the medical-kit record. Approve it with `PATCH /api/verification/:verificationId/review`. The buyer can browse the pre-seeded chair listing at `GET /api/listings/marketplace`. For a fresh vendor flow, select a `DEADSTOCK_FLAGGED` inventory item, upload proof, then submit its returned URL to the verification endpoint.

@@ -22,6 +22,8 @@
 - Wrote up Journal Entry No. 1, documenting the team's finalized actors/workflow, the Use Case Diagram and DFD decisions, the rule-based verification approach, the regulated-item compliance routing, and the open question on where buyer ratings should live (Verification Records vs. a separate Feedback store).
 - Created a scratch test file to scope out the CI setup (build + unit tests + lint) called out as a next step, then removed it once the approach was validated.
 
-## Week 6 (Sep 7 - Sep 13): CI Pipeline (in progress)
-- Starting CI pipeline setup (build, unit tests, lint) per Section 9.1 of the report.
-- Drafting backend schema notes for the five data stores identified in the DFD (Inventory, Verification Records, Listings, Transactions, Vendors/Buyers).
+## Week 6 (Sep 7 - Sep 13): CI Pipeline, Repo Restructuring & Prototype Report
+- Finished the CI pipeline (build, backend unit tests, typecheck) per Section 9.1 of the report; GitHub Actions now gates every push, with the backend suite at 18/18 tests passing and the frontend suite at 6/6.
+- Restructured the repository into the course-required layout (`code/`, `docs/`, `project-proposal/`, `project-report-prototype-stage/`, `journals/`), aligning it with the reference structure shared in class.
+- Authored the Prototype Stage Report in LaTeX, reusing the same `bvraghav-tiet-ucs503p-article` template and section structure as the team's own proposal, covering the implemented rule engine, lifecycle automation, architecture, evaluation criteria, and current deliverable status against Dr. Asif's format.
+- Drafted the prototype presentation deck covering the same material for the in-class walkthrough.

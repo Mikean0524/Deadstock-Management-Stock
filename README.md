@@ -43,3 +43,7 @@ The prototype intentionally excludes purchase transactions, analytics, payment p
 ## Person 3 demo sequence
 
 After seeding, sign in as the admin and open `GET /api/verification/admin/queue` to review the medical-kit record. Approve it with `PATCH /api/verification/:verificationId/review`. The buyer can browse the pre-seeded chair listing at `GET /api/listings/marketplace`. For a fresh vendor flow, select a `DEADSTOCK_FLAGGED` inventory item, upload proof, then submit its returned URL to the verification endpoint.
+
+## Frontend (Person 1)
+
+The vendor-facing React/Vite/TypeScript app lives in [`frontend/`](frontend) — auth screens, vendor dashboard, inventory CRUD against this backend's API contract, and the shared app shell that mounts Person 3's Admin Review and Buyer Marketplace pages. See [`frontend/README.md`](frontend/README.md) for setup, screenshots and what's implemented.

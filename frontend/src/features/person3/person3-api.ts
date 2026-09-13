@@ -39,5 +39,6 @@ export const person3Api = {
   getAdminQueue: (token: string) => request<VerificationRecord[]>("/api/verification/admin/queue", token),
   reviewVerification: (verificationId: string, decision: "APPROVE" | "REJECT", token: string) =>
     request<VerificationRecord>(`/api/verification/${verificationId}/review`, token, { method: "PATCH", body: JSON.stringify({ decision }) }),
-  getMarketplace: (search = "") => request<MarketplaceListing[]>(`/api/listings/marketplace?search=${encodeURIComponent(search)}`)
+  getMarketplace: (search = "") => request<MarketplaceListing[]>(`/api/listings/marketplace?search=${encodeURIComponent(search)}`),
+  reserveListing: (listingId: string, token: string) => request<{ message: string }>(`/api/listings/${listingId}/reserve`, token, { method: "POST" })
 };

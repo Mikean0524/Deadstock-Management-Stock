@@ -1,52 +1,23 @@
-import { useMemo, useState } from "react";
-import type { MarketplaceListing, VerificationRecord } from "./person3-api";
+import { useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "../../context/AuthContext";
+import { person3Api } from "./person3-api";
 
-const mockQueue: VerificationRecord[] = [{
-  id: "verification-demo-1", inventoryId: "inventory-demo-1", productName: "Surplus first-aid kits", category: "MEDICAL",
-  proofUrl: "https://placehold.co/720x420?text=Batch+proof", ruleResult: "MANUAL_REVIEW", verificationStatus: "MANUAL_REVIEW",
-  checks: [
-    { name: "productName", passed: true, message: "Product name is required." },
-    { name: "quantity", passed: true, message: "Quantity must be greater than zero." },
-    { name: "proof", passed: true, message: "A proof image or document is required." },
-    { name: "regulatedCategory", passed: false, message: "Regulated categories require an administrator review." }
-  ]
-}];
+function Status({ children }: { children: string }) { return <span className="rounded-full bg-emerald-100 px-2 py-1 text-xs font-semibold text-emerald-800">{children}</span>; }
 
-const mockListings: MarketplaceListing[] = [{
-  id: "listing-demo-1", title: "Verified surplus office chairs", description: "Good-condition chairs from a closed office floor.", price: 850, quantity: 12, verified: true
-}];
-
-function Status({ children }: { children: string }) {
-  return <span className="rounded-full bg-emerald-100 px-2 py-1 text-xs font-semibold text-emerald-800">{children}</span>;
-}
-
-// Prototype-only screens: replace the mock state with person3Api calls after
-// Person 1 provides the shared app shell and Person 2's API is running.
 export function AdminReviewPage() {
-  const [queue, setQueue] = useState(mockQueue);
-  const [message, setMessage] = useState<string>();
-
-  const decide = (id: string, decision: "APPROVE" | "REJECT") => {
-    setQueue((items) => items.filter((item) => item.id !== id));
-    setMessage(decision === "APPROVE" ? "Item approved and ready for verified marketplace publication." : "Item rejected.");
+  const { token } = useAuth(); const queryClient = useQueryClient(); const [message, setMessage] = useState<string>();
+  const query = useQuery({ queryKey: ["verification-queue"], queryFn: () => person3Api.getAdminQueue(token!), enabled: Boolean(token) });
+  const decide = async (id: string, decision: "APPROVE" | "REJECT") => {
+    try { await person3Api.reviewVerification(id, decision, token!); await queryClient.invalidateQueries({ queryKey: ["verification-queue"] }); setMessage(decision === "APPROVE" ? "Item approved. It is now verified." : "Item rejected."); }
+    catch (error) { setMessage(error instanceof Error ? error.message : "Review failed"); }
   };
-
-  return <main className="mx-auto max-w-5xl space-y-6 p-6">
-    <header><p className="text-sm font-medium text-indigo-600">Administrator</p><h1 className="text-3xl font-bold">Verification queue</h1></header>
-    {message && <p className="rounded-md bg-slate-100 p-3 text-sm">{message}</p>}
-    {queue.length === 0 ? <p className="rounded-md border p-6 text-slate-600">No verification records require manual review.</p> : queue.map((record) => <article key={record.id} className="grid gap-6 rounded-xl border bg-white p-5 shadow-sm md:grid-cols-2">
-      <section className="space-y-3"><div className="flex items-center justify-between"><h2 className="text-xl font-semibold">{record.productName}</h2><Status>{record.ruleResult}</Status></div><p className="text-sm text-slate-600">Category: {record.category}</p><img className="aspect-video w-full rounded-lg object-cover" src={record.proofUrl} alt={`Proof for ${record.productName}`} /></section>
-      <section className="space-y-3"><h3 className="font-semibold">Automated checks</h3><ul className="space-y-2 text-sm">{record.checks.map((check) => <li key={check.name} className={check.passed ? "text-emerald-700" : "text-amber-700"}>{check.passed ? "✓" : "!"} {check.message}</li>)}</ul><div className="flex gap-3 pt-4"><button onClick={() => decide(record.id, "APPROVE")} className="rounded-md bg-emerald-600 px-4 py-2 font-medium text-white">Approve</button><button onClick={() => decide(record.id, "REJECT")} className="rounded-md border border-rose-300 px-4 py-2 font-medium text-rose-700">Reject</button></div></section>
-    </article>)}</main>;
+  const queue = query.data ?? [];
+  return <main className="mx-auto max-w-5xl space-y-6"><header className="rounded-3xl bg-gradient-to-br from-indigo-700 to-slate-950 p-8 text-white"><p className="text-sm font-semibold uppercase tracking-[.2em] text-cyan-300">Administrator</p><h1 className="mt-2 text-3xl font-bold">Verification queue</h1><p className="mt-2 text-indigo-100">Review the evidence that protects marketplace quality.</p></header>{message && <p className="rounded-xl bg-slate-900 p-3 text-sm text-white">{message}</p>}{query.isLoading ? <p>Loading verification queue...</p> : queue.length === 0 ? <p className="rounded-2xl border bg-white p-6 text-slate-600">No verification records require manual review.</p> : queue.map((record: any) => <article key={record.id} className="grid gap-6 rounded-3xl border border-white bg-white/85 p-6 shadow-xl shadow-slate-900/5 md:grid-cols-2"><section className="space-y-3"><div className="flex items-center justify-between"><h2 className="text-xl font-semibold">{record.inventory.product_name}</h2><Status>{record.verification_status}</Status></div><p className="text-sm text-slate-600">Category: {record.inventory.category}</p><img className="aspect-video w-full rounded-2xl object-cover" src={record.proof_url} alt={`Proof for ${record.inventory.product_name}`} /></section><section className="space-y-3"><h3 className="font-semibold">Review</h3><p className="text-sm text-slate-600">{record.notes ?? "Review the submitted proof."}</p><div className="flex gap-3 pt-4"><button onClick={() => decide(record.id, "APPROVE")} className="rounded-xl bg-emerald-600 px-4 py-2 font-medium text-white shadow-lg shadow-emerald-500/20">Approve</button><button onClick={() => decide(record.id, "REJECT")} className="rounded-xl border border-rose-300 px-4 py-2 font-medium text-rose-700">Reject</button></div></section></article>)}</main>;
 }
 
 export function BuyerMarketplacePage() {
-  const [search, setSearch] = useState("");
-  const listings = useMemo(() => mockListings.filter((listing) => listing.title.toLowerCase().includes(search.toLowerCase())), [search]);
-  return <main className="mx-auto max-w-5xl space-y-6 p-6">
-    <header><p className="text-sm font-medium text-indigo-600">Buyer</p><h1 className="text-3xl font-bold">Marketplace</h1></header>
-    <input aria-label="Search listings" className="w-full rounded-md border px-3 py-2" placeholder="Search verified stock" value={search} onChange={(event) => setSearch(event.target.value)} />
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{listings.map((listing) => <article key={listing.id} className="rounded-xl border bg-white p-5 shadow-sm"><Status>VERIFIED</Status><h2 className="mt-3 text-lg font-semibold">{listing.title}</h2><p className="mt-2 text-sm text-slate-600">{listing.description}</p><div className="mt-5 flex justify-between font-medium"><span>₹{listing.price}</span><span>{listing.quantity} available</span></div></article>)}</div>
-    {listings.length === 0 && <p className="text-slate-600">No verified listings match your search.</p>}
-  </main>;
+  const { user, token } = useAuth(); const [search, setSearch] = useState(""); const [reserved, setReserved] = useState<string[]>([]); const [message, setMessage] = useState(""); const query = useQuery({ queryKey: ["marketplace", search], queryFn: () => person3Api.getMarketplace(search) }); const listings = query.data ?? [];
+  const reserve = async (listingId: string) => { try { const result = await person3Api.reserveListing(listingId, token!); setReserved((current) => [...current, listingId]); setMessage(result.message); } catch (error) { setMessage(error instanceof Error ? error.message : "Could not reserve item"); } };
+  return <main className="mx-auto max-w-5xl space-y-6"><header className="rounded-3xl bg-slate-950 p-8 text-white"><p className="text-sm font-semibold uppercase tracking-[.2em] text-cyan-300">Verified marketplace</p><h1 className="mt-2 text-3xl font-bold">Find value. Waste less.</h1><p className="mt-2 text-slate-300">Quality surplus, transparently verified for its next use.</p></header>{message && <p className="rounded-xl bg-emerald-50 p-4 text-sm font-medium text-emerald-800">{message}</p>}<input aria-label="Search listings" className="w-full rounded-2xl border border-white bg-white/90 px-5 py-4 shadow-lg shadow-slate-900/5 outline-none ring-indigo-300 transition focus:ring-4" placeholder="Search verified stock" value={search} onChange={(event) => setSearch(event.target.value)} />{query.isLoading ? <p>Loading listings...</p> : <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{listings.map((listing: any) => <article key={listing.id} className="group rounded-3xl border border-white bg-white/85 p-6 shadow-lg shadow-slate-900/5 transition hover:-translate-y-1 hover:shadow-xl"><Status>VERIFIED</Status><h2 className="mt-4 text-xl font-bold">{listing.title}</h2><p className="mt-2 text-sm leading-6 text-slate-600">{listing.description}</p><div className="mt-6 flex justify-between border-t pt-4 font-semibold"><span className="text-indigo-600">₹{listing.price}</span><span className="text-slate-500">{listing.quantity} available</span></div>{user?.role === 'BUYER' ? <button disabled={reserved.includes(listing.id)} onClick={() => reserve(listing.id)} className="mt-5 w-full rounded-xl bg-slate-950 px-4 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:bg-emerald-600">{reserved.includes(listing.id) ? 'Interest recorded' : 'Reserve this item'}</button> : !user && <p className="mt-5 text-sm font-medium text-indigo-600">Sign in as a buyer to reserve</p>}</article>)}</div>}{!query.isLoading && listings.length === 0 && <p className="text-slate-600">No verified listings match your search.</p>}</main>;
 }

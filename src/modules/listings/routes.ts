@@ -27,3 +27,15 @@ listingRouter.get("/marketplace", async (req, res, next) => {
     res.json({ success: true, data: listings });
   } catch (error) { next(error); }
 });
+
+// Prototype-only buyer action. It intentionally does not take payment or reduce stock;
+// a later production phase can replace this with orders/reservations persisted in Prisma.
+listingRouter.post("/:listingId/reserve", requireAuth, requireRole("BUYER"), async (req, res, next) => {
+  try {
+    const listingId = req.params.listingId;
+    if (typeof listingId !== "string") return res.status(400).json({ success: false, error: { message: "Invalid listing ID" } });
+    const listing = await prisma.listing.findFirst({ where: { id: listingId, listing_status: "PUBLISHED" } });
+    if (!listing) return res.status(404).json({ success: false, error: { message: "Published listing not found" } });
+    res.status(201).json({ success: true, data: { listingId, buyerId: req.user!.id, message: "Interest recorded. The vendor will be contacted in the next stage." } });
+  } catch (error) { next(error); }
+});

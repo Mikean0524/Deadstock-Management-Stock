@@ -1,103 +1,38 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Deadstock Management System — prototype project showcase." />
-    <title>Deadstock Management System</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <header class="nav-wrap">
-      <a class="brand" href="#top" aria-label="Deadstock Management System home"><span class="brand-mark">D</span> Deadstock</a>
-      <nav aria-label="Main navigation">
-        <a href="#workflow">Workflow</a>
-        <a href="#prototype">Prototype</a>
-        <a href="#architecture">Architecture</a>
-        <a href="#team">Team</a>
-      </nav>
-      <a class="nav-link" href="https://github.com/Mikean0524/Deadstock-Management-Stock" target="_blank" rel="noreferrer">View repository <span>↗</span></a>
-    </header>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Deadstock Management System documentation"><title>Deadstock Management System</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css"></head>
+<body>
+<header class="topbar"><button id="menu-button" class="menu-button" aria-label="Toggle navigation">☰</button><a class="logo" href="#home">DS</a><div class="top-title"><strong>Deadstock Management System</strong><small id="page-title">Home</small></div><label class="search">⌕ <input id="search-input" type="search" placeholder="Search documentation"></label><a class="repo-link" href="https://github.com/Mikean0524/Deadstock-Management-Stock" target="_blank" rel="noreferrer">⌘ <span>Repository</span></a></header>
+<div class="layout">
+<aside class="sidebar" id="sidebar"><div class="project-name">Deadstock Management System</div><nav aria-label="Project navigation"><a class="active" href="#home" data-page="Home">Home</a><a href="#team" data-page="Team profile">Team profile</a><a href="#overview" data-page="Executive overview">Executive overview</a><a href="#capabilities" data-page="Platform capabilities">Platform capabilities</a><a href="#architecture" data-page="System architecture">System architecture</a><a href="#demo" data-page="Prototype demonstration">Prototype demonstration</a><a href="#deliverables" data-page="Engineering deliverables">Engineering deliverables</a><a href="#roadmap" data-page="Project roadmap">Project roadmap</a></nav><div class="nav-section">Journals</div><nav aria-label="Team journals"><a href="https://github.com/Mikean0524/Deadstock-Management-Stock/blob/main/journals/abhilakshya-puri/journal.md" target="_blank" rel="noreferrer">Abhilakshya Puri ↗</a><a href="https://github.com/Mikean0524/Deadstock-Management-Stock/blob/main/journals/aryan-gupta/journal.md" target="_blank" rel="noreferrer">Aryan Gupta ↗</a><a href="https://github.com/Mikean0524/Deadstock-Management-Stock/blob/main/journals/farhan-kansal/journal.md" target="_blank" rel="noreferrer">Farhan Kansal ↗</a></nav></aside>
+<main class="content" id="home"><article>
+<div class="intro-mark">DEADSTOCK<br>MANAGEMENT</div><p class="course">SOFTWARE ENGINEERING · PROTOTYPE PROJECT</p><h1>♻️ Deadstock Management System</h1><p class="subtitle">Verified retail deadstock recovery and marketplace prototype</p><div class="badges"><span class="badge green">Prototype · Active</span><span class="badge dark">Frontend · React + TypeScript</span><span class="badge node">Backend · Node.js + Express</span><span class="badge blue">Data · Prisma + PostgreSQL</span><span class="badge purple">Storage · Supabase ready</span></div><hr>
+<section id="team"><h2>👥 Academic &amp; team profile</h2><table><thead><tr><th>Contribution area</th><th>Team member</th><th>Primary prototype responsibility</th></tr></thead><tbody><tr><td><strong>Frontend &amp; vendor experience</strong></td><td>Abhilakshya Puri</td><td>React application shell, authentication screens, dashboard, and inventory UI.</td></tr><tr><td><strong>Backend &amp; data foundation</strong></td><td>Aryan Gupta</td><td>Express API, Prisma schema, JWT authentication, inventory CRUD, and ageing lifecycle.</td></tr><tr><td><strong>Verification &amp; marketplace</strong></td><td>Farhan Kansal</td><td>Verification rules, proof submission, manual review, listing publication, marketplace, tests, and CI.</td></tr></tbody></table></section>
+<section id="overview"><h2>📌 Executive overview</h2><p>Retail businesses often retain inventory that is still usable but no longer moving through normal sales channels. This prototype provides a controlled workflow for identifying ageing inventory, verifying its eligibility, and publishing trusted surplus listings.</p><p>The central loop is deliberately focused: <strong>vendor inventory → ageing/deadstock flag → proof submission → deterministic verification → administrator review where required → verified listing → buyer marketplace.</strong></p><blockquote>Only inventory with a <code>VERIFIED</code> verification record can be published to the marketplace.</blockquote></section>
+<section id="capabilities"><h2>✨ Key platform capabilities</h2><div class="cards"><div><h3>Inventory lifecycle</h3><p>Inventory is tracked as <code>ACTIVE</code>, <code>AGING</code>, <code>DEADSTOCK_FLAGGED</code>, or <code>SUBMITTED_FOR_VERIFICATION</code>.</p></div><div><h3>Explainable verification</h3><p>Required details, proof, quantity, condition, eligibility, and regulated categories produce <code>PASS</code>, <code>REJECT</code>, or <code>MANUAL_REVIEW</code>.</p></div><div><h3>Admin accountability</h3><p>Regulated or ambiguous inventory reaches an administrator queue for a final approve or reject decision.</p></div><div><h3>Protected publishing</h3><p>Server-side checks ensure that only <code>VERIFIED</code> inventory becomes a <code>PUBLISHED</code> listing.</p></div></div></section>
+<section id="architecture"><h2>🏗️ System architecture &amp; data flow</h2><pre><code>Browser (React + TypeScript)
+          ↓ REST API
+Express + TypeScript backend
+ ├── Authentication &amp; roles
+ ├── Inventory + ageing logic
+ ├── Verification rule engine
+ ├── Administrator review
+ └── Verified listings + marketplace
+          ↓
+Prisma → PostgreSQL / Supabase
+          ↑
+Supabase Storage (proof files)</code></pre><h3>Prototype technology stack</h3><table><thead><tr><th>Layer</th><th>Technology</th><th>Purpose</th></tr></thead><tbody><tr><td>Frontend</td><td>React, TypeScript, Vite, Tailwind CSS</td><td>Role-aware vendor, admin, and buyer screens.</td></tr><tr><td>Backend</td><td>Node.js, Express, TypeScript, Zod</td><td>REST APIs and request validation.</td></tr><tr><td>Security</td><td>JWT and bcrypt</td><td>Authenticated role and ownership checks.</td></tr><tr><td>Persistence</td><td>Prisma and PostgreSQL</td><td>Shared data model and database access.</td></tr><tr><td>Testing</td><td>Vitest, Supertest, Postman</td><td>Unit, API, and manual request testing.</td></tr></tbody></table></section>
+<section id="demo"><h2>🚀 Interactive prototype demonstration</h2><h3>1. Run the full-stack prototype</h3><pre><code># Terminal 1 — backend
+cd code/backend
+npm install
+npm run dev
 
-    <main id="top">
-      <section class="hero section-shell">
-        <div class="hero-copy reveal">
-          <p class="eyebrow">Verified retail recovery platform</p>
-          <h1>Give deadstock a <em>second life.</em></h1>
-          <p class="hero-text">A prototype marketplace that helps vendors identify slow-moving inventory, verify it with transparent rules, and publish trusted listings for buyers.</p>
-          <div class="hero-actions">
-            <a class="button button-primary" href="#prototype">Explore the prototype <span>↓</span></a>
-            <a class="button button-quiet" href="#workflow">See how it works</a>
-          </div>
-        </div>
-        <div class="hero-art reveal" aria-label="Deadstock lifecycle illustration">
-          <div class="glow glow-one"></div><div class="glow glow-two"></div>
-          <div class="inventory-card card-a"><span class="mini-label">INVENTORY</span><strong>128</strong><small>items tracked</small></div>
-          <div class="inventory-card card-b"><span class="status-dot"></span><span>VERIFIED</span><strong>Ready to publish</strong></div>
-          <div class="flow-line line-one"></div><div class="flow-line line-two"></div>
-          <div class="flow-node node-one">01</div><div class="flow-node node-two">02</div><div class="flow-node node-three">03</div>
-          <p class="art-caption">Track → Verify → Recover</p>
-        </div>
-      </section>
-
-      <section class="stats section-shell" aria-label="Project highlights">
-        <div><span>03</span><p>user roles</p></div>
-        <div><span>06</span><p>verification states</p></div>
-        <div><span>18</span><p>automated tests</p></div>
-        <div><span>01</span><p>shared prototype flow</p></div>
-      </section>
-
-      <section id="workflow" class="section-shell section-block">
-        <div class="section-heading reveal"><p class="eyebrow">Core workflow</p><h2>From ageing stock to a trusted listing.</h2><p>The prototype focuses on one practical loop instead of trying to solve every marketplace problem at once.</p></div>
-        <ol class="workflow reveal">
-          <li><span class="step-number">01</span><div><h3>Track inventory</h3><p>A vendor creates or selects an inventory item. The system calculates its ageing and deadstock status.</p></div></li>
-          <li><span class="step-number">02</span><div><h3>Submit proof</h3><p>Eligible deadstock is submitted with a proof image or document for deterministic verification.</p></div></li>
-          <li><span class="step-number">03</span><div><h3>Verify or review</h3><p>Rules produce PASS, REJECT, or MANUAL_REVIEW. Regulated or ambiguous items are routed to an administrator.</p></div></li>
-          <li><span class="step-number">04</span><div><h3>Publish verified stock</h3><p>Only a VERIFIED item can become a published listing visible in the buyer marketplace.</p></div></li>
-        </ol>
-      </section>
-
-      <section id="prototype" class="feature-band">
-        <div class="section-shell feature-grid">
-          <div class="feature-copy reveal"><p class="eyebrow">Prototype scope</p><h2>Built around accountability, not black-box verification.</h2><p>The rule engine checks required product information, quantity, condition, proof, deadstock eligibility, and regulated categories. Every outcome is explainable.</p><a class="text-link" href="https://github.com/Mikean0524/Deadstock-Management-Stock/blob/main/project-report-prototype-stage/PROTOTYPE_DEMO.md" target="_blank" rel="noreferrer">Read the demo guide <span>→</span></a></div>
-          <div class="rules-panel reveal">
-            <div class="panel-top"><span>VERIFICATION CHECKS</span><span class="live-pill">RULE-BASED</span></div>
-            <div class="rule-row"><span class="check">✓</span> Product name and category</div>
-            <div class="rule-row"><span class="check">✓</span> Quantity and condition</div>
-            <div class="rule-row"><span class="check">✓</span> Proof image or document</div>
-            <div class="rule-row"><span class="check">✓</span> Deadstock eligibility</div>
-            <div class="rule-row review"><span class="check">!</span> Regulated category → manual review</div>
-          </div>
-        </div>
-      </section>
-
-      <section id="architecture" class="section-shell section-block">
-        <div class="section-heading reveal"><p class="eyebrow">System design</p><h2>One modular system, clear responsibilities.</h2></div>
-        <div class="architecture-grid reveal">
-          <article><span class="module-icon">01</span><h3>React frontend</h3><p>Role-aware vendor, administrator, and buyer experiences built with React, TypeScript, Vite, Tailwind CSS, and React Router.</p></article>
-          <article><span class="module-icon">02</span><h3>Express API</h3><p>Node.js and TypeScript services provide authentication, inventory lifecycle logic, verification, listings, and marketplace APIs.</p></article>
-          <article><span class="module-icon">03</span><h3>Data & storage</h3><p>Prisma models the shared contract for PostgreSQL/Supabase, with Supabase Storage prepared for proof files.</p></article>
-        </div>
-        <div class="diagram-grid reveal">
-          <figure><img src="assets/activity-diagram.jpeg" alt="Deadstock Management System activity diagram" loading="lazy" /><figcaption>Activity diagram — the prototype decision flow.</figcaption></figure>
-          <figure><img src="assets/er-diagram.jpeg" alt="Deadstock Management System entity relationship diagram" loading="lazy" /><figcaption>ER diagram — users, inventory, verification records, and listings.</figcaption></figure>
-        </div>
-      </section>
-
-      <section id="team" class="section-shell section-block team-block">
-        <div class="section-heading reveal"><p class="eyebrow">Collaboration</p><h2>Three connected ownership areas.</h2><p>Each contributor owns a meaningful part of the prototype and its integration into the shared flow.</p></div>
-        <div class="team-grid reveal">
-          <article><span>01</span><h3>Frontend & vendor experience</h3><p>Authentication screens, vendor dashboard, inventory management, and reusable UI components.</p></article>
-          <article><span>02</span><h3>Backend & inventory foundation</h3><p>Prisma database contract, JWT authentication, inventory CRUD, and ageing/deadstock calculation.</p></article>
-          <article><span>03</span><h3>Verification & marketplace</h3><p>Proof submission, rule engine, admin review, verified publishing, marketplace browsing, tests, and CI.</p></article>
-        </div>
-      </section>
-    </main>
-
-    <footer><div><a class="brand" href="#top"><span class="brand-mark">D</span> Deadstock</a><p>Deadstock Management System · Prototype stage</p></div><a href="#top">Back to top ↑</a></footer>
-    <script src="app.js"></script>
-  </body>
-</html>
+# Terminal 2 — frontend
+cd code/frontend
+npm install
+npm run dev</code></pre><p>Open <code>http://localhost:5173</code>. Without a configured <code>DATABASE_URL</code>, the backend runs with its built-in in-memory demo store.</p><h3>2. Demonstration sequence</h3><ol><li>Open the marketplace to see a verified public listing.</li><li>Sign in as a vendor and add or select an old inventory item.</li><li>Submit the deadstock item with proof for verification.</li><li>Sign in as an administrator and review the prepared manual-review item.</li><li>Approve the item and return to the marketplace.</li></ol><div class="notice"><strong>Demo accounts:</strong> Vendor <code>vendor@example.com</code> / <code>Vendor123!</code>; Admin <code>admin@example.com</code> / <code>Admin123!</code>; Buyer <code>buyer@example.com</code> / <code>Buyer123!</code>.</div></section>
+<section id="deliverables"><h2>📐 Formal engineering deliverables</h2><table><thead><tr><th>Deliverable</th><th>Description</th><th>Access</th></tr></thead><tbody><tr><td><strong>Project proposal</strong></td><td>Problem definition, requirements, scope, and development plan.</td><td><a href="https://github.com/Mikean0524/Deadstock-Management-Stock/blob/main/project-proposal/MainDeadstockManagement.pdf" target="_blank" rel="noreferrer">View PDF ↗</a></td></tr><tr><td><strong>Entity-relationship diagram</strong></td><td>Data model for users, inventory, verification records, and listings.</td><td><a href="assets/er-diagram.jpeg" target="_blank">View ER diagram ↗</a></td></tr><tr><td><strong>Activity diagram</strong></td><td>Swimlane workflow across vendor, system, administrator, and buyer roles.</td><td><a href="assets/activity-diagram.jpeg" target="_blank">View activity diagram ↗</a></td></tr><tr><td><strong>Data-flow diagrams</strong></td><td>Context and process-level system data-flow modelling.</td><td><a href="https://github.com/Mikean0524/Deadstock-Management-Stock/tree/main/docs/Diagrams" target="_blank" rel="noreferrer">View diagrams ↗</a></td></tr><tr><td><strong>Prototype demo guide</strong></td><td>Local setup, demo accounts, workflow, and prototype constraints.</td><td><a href="https://github.com/Mikean0524/Deadstock-Management-Stock/blob/main/project-report-prototype-stage/PROTOTYPE_DEMO.md" target="_blank" rel="noreferrer">View guide ↗</a></td></tr></tbody></table></section>
+<section id="roadmap"><h2>📅 Project roadmap &amp; prototype boundaries</h2><table><thead><tr><th>Stage</th><th>Scope</th><th>Status</th></tr></thead><tbody><tr><td><strong>Requirements &amp; modelling</strong></td><td>Proposal, diagrams, Gantt planning, shared contracts.</td><td><span class="status done">Completed</span></td></tr><tr><td><strong>Prototype implementation</strong></td><td>Auth, inventory, ageing, verification, admin review, marketplace, tests, and CI.</td><td><span class="status active">Active</span></td></tr><tr><td><strong>Next iteration</strong></td><td>Transactions, payments, analytics, notifications, advanced compliance, and deployment.</td><td><span class="status upcoming">Planned</span></td></tr></tbody></table></section>
+</article></main>
+<aside class="toc"><strong>On this page</strong><a href="#team">Team profile</a><a href="#overview">Executive overview</a><a href="#capabilities">Capabilities</a><a href="#architecture">Architecture</a><a href="#demo">Demo</a><a href="#deliverables">Deliverables</a><a href="#roadmap">Roadmap</a></aside></div>
+<footer>Deadstock Management System · Software Engineering Prototype · Academic Year 2026–27</footer><script src="app.js"></script></body></html>

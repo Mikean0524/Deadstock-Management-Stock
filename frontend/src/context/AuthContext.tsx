@@ -9,8 +9,8 @@ interface AuthContextValue {
   token: string | null
   isAuthenticated: boolean
   isLoading: boolean
-  login: (input: LoginInput) => Promise<void>
-  register: (input: RegisterInput) => Promise<void>
+  login: (input: LoginInput) => Promise<AuthUser>
+  register: (input: RegisterInput) => Promise<AuthUser>
   logout: () => void
 }
 
@@ -58,8 +58,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     token: session?.token ?? null,
     isAuthenticated: session !== null,
     isLoading,
-    login: async (input) => setSession(await loginUser(input)),
-    register: async (input) => setSession(await registerUser(input)),
+    login: async (input) => { const next = await loginUser(input); setSession(next); return next.user },
+    register: async (input) => { const next = await registerUser(input); setSession(next); return next.user },
     logout: () => setSession(null),
   }
 

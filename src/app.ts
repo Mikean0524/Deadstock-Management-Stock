@@ -7,6 +7,18 @@ import { listingRouter } from "./modules/listings/routes.js";
 import { verificationRouter } from "./modules/verification/routes.js";
 
 export const app = express();
+// The Vite UI runs on a different local port during development.
+app.use((req, res, next) => {
+  const origin = req.header("origin");
+  if (origin === "http://localhost:5173" || origin === "http://127.0.0.1:5173") {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Vary", "Origin");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS");
+  }
+  if (req.method === "OPTIONS") return res.sendStatus(204);
+  next();
+});
 app.use(express.json());
 app.use(authenticateRequest);
 app.get("/api/health", (_req, res) => res.json({ success: true, data: { status: "ok" } }));

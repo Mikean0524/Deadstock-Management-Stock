@@ -10,7 +10,7 @@ The precise handoff details are in [docs/person3-integration-contract.md](docs/p
 
 ## Setup
 
-1. Copy `.env.example` to `.env` and enter the Supabase/PostgreSQL values.
+1. `cd code/backend`, copy `.env.example` to `.env` and enter the Supabase/PostgreSQL values.
 2. Run `npm install`, `npm run db:generate`, `npm run db:migrate`, and `npm run db:seed`.
 3. Run `npm run dev`.
 4. Create a private Supabase Storage bucket named `verification-proofs` (or set `SUPABASE_PROOF_BUCKET`).
@@ -36,8 +36,8 @@ The prototype intentionally excludes purchase transactions, analytics, payment p
 
 ## Independent Person 3 deliverables completed now
 
-- Rule engine unit tests and the Postman collection in `postman/` can be used immediately.
-- Mock-ready React/Tailwind Admin Review and Buyer Marketplace pages are in `frontend/src/features/person3/`; Person 1 can add them to the shared Vite router now.
+- Rule engine unit tests and the Postman collection in `code/backend/postman/` can be used immediately.
+- Mock-ready React/Tailwind Admin Review and Buyer Marketplace pages are in `code/frontend/src/features/person3/`; Person 1 can add them to the shared Vite router now.
 - `person3-api.ts` is the API adapter to switch the screens from mock data to the live API after Aryan completes authentication, inventory, and Prisma.
 
 ## Person 3 demo sequence
@@ -46,4 +46,4 @@ After seeding, sign in as the admin and open `GET /api/verification/admin/queue`
 
 ## Frontend (Person 1)
 
-The vendor-facing React/Vite/TypeScript app lives in [`frontend/`](frontend) — auth screens, vendor dashboard, inventory CRUD against this backend's API contract, and the shared app shell that mounts Person 3's Admin Review and Buyer Marketplace pages. See [`frontend/README.md`](frontend/README.md) for setup, screenshots and what's implemented.
+The vendor-facing React/Vite/TypeScript app lives in [`code/frontend/`](code/frontend) — auth screens, vendor dashboard, inventory CRUD against this backend's API contract, and the shared app shell that mounts Person 3's Admin Review and Buyer Marketplace pages. See [`code/frontend/README.md`](code/frontend/README.md) for setup, screenshots and what's implemented.

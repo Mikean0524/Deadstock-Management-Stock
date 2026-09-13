@@ -15,7 +15,7 @@ npm run test            # run once
 npm run test:watch
 ```
 
-The app expects the root backend (`npm run dev` from the repo root, see the root README) running and reachable at `VITE_API_BASE_URL`. Register a vendor account from `/register`, or sign in with a seeded demo account (see root README) once the backend's `npm run db:seed` has run.
+The app expects the backend (`npm run dev` from `code/backend`, see the root README) running and reachable at `VITE_API_BASE_URL`. Register a vendor account from `/register`, or sign in with a seeded demo account (see root README) once the backend's `npm run db:seed` has run.
 
 ## What's implemented
 

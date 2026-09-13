@@ -11,7 +11,7 @@ export function Select({ label, id, className, children, ...rest }: SelectProps)
       <span className="font-medium text-slate-700">{label}</span>
       <select
         id={selectId}
-        className={['rounded-md border border-slate-300 px-3 py-2 text-sm', className].filter(Boolean).join(' ')}
+        className={['rounded-xl border border-slate-200 bg-white/90 px-3 py-2.5 text-sm shadow-sm outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100', className].filter(Boolean).join(' ')}
         {...rest}
       >
         {children}

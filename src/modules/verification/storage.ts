@@ -4,7 +4,8 @@ export async function uploadProof(file: Express.Multer.File, inventoryId: string
   const url = process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   const bucket = process.env.SUPABASE_PROOF_BUCKET ?? "verification-proofs";
-  if (!url || !key) throw new Error("Supabase storage is not configured");
+  // In memory-demo mode a data URL is enough to preview the uploaded proof.
+  if (!url || !key) return `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
 
   const client = createClient(url, key);
   const path = `${inventoryId}/${Date.now()}-${file.originalname}`;

@@ -22,8 +22,8 @@ export function RegisterPage() {
     setError(undefined)
     setIsSubmitting(true)
     try {
-      await register(form)
-      navigate('/dashboard', { replace: true })
+      const user = await register(form)
+      navigate(user.role === 'BUYER' ? '/marketplace' : '/dashboard', { replace: true })
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Unable to register')
     } finally {
@@ -32,9 +32,9 @@ export function RegisterPage() {
   }
 
   return (
-    <div className="flex min-h-svh items-center justify-center p-6">
-      <form className="flex w-full max-w-sm flex-col gap-3 rounded-xl border bg-white p-8 shadow-sm" onSubmit={handleSubmit}>
-        <h1 className="text-2xl font-bold text-slate-900">Create account</h1>
+    <div className="auth-shell flex min-h-svh items-center justify-center p-6">
+      <form className="flex w-full max-w-md flex-col gap-4 rounded-3xl border border-white/60 bg-white/95 p-8 shadow-2xl shadow-slate-950/15 sm:p-10" onSubmit={handleSubmit}>
+        <p className="text-sm font-semibold uppercase tracking-[.18em] text-indigo-600">Get started</p><h1 className="text-3xl font-bold text-slate-950">Create your account</h1>
         {error && <p className="rounded-md bg-rose-50 p-2 text-sm text-rose-700">{error}</p>}
         <TextField
           label="Full name"

@@ -36,7 +36,8 @@ export function AddInventoryForm({ onSubmit, isSubmitting }: AddInventoryFormPro
   }
 
   return (
-    <form className="grid gap-4 rounded-xl border bg-white p-5 shadow-sm sm:grid-cols-2 lg:grid-cols-3" onSubmit={handleSubmit}>
+    <form className="grid gap-4 rounded-3xl border border-white bg-white/85 p-6 shadow-xl shadow-slate-900/5 backdrop-blur-sm sm:grid-cols-2 lg:grid-cols-3" onSubmit={handleSubmit}>
+      <div className="sm:col-span-2 lg:col-span-3"><p className="text-sm font-bold uppercase tracking-[.16em] text-indigo-600">New stock</p><h2 className="mt-1 text-xl font-bold">Add an item to your inventory</h2><p className="mt-1 text-sm text-slate-500">The system will automatically assess its lifecycle.</p></div>
       <TextField
         label="Product name"
         value={form.productName}

@@ -17,8 +17,8 @@ export function AppLayout() {
 
   return (
     <div className="min-h-svh">
-      <header className="flex items-center gap-6 border-b bg-white px-6 py-3">
-        <span className="font-bold text-slate-900">Deadstock Portal</span>
+      <header className="sticky top-0 z-10 border-b border-white/60 bg-white/80 px-5 py-3 backdrop-blur-xl sm:px-8">
+       <div className="mx-auto flex max-w-7xl items-center gap-5"><span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-indigo-600 to-cyan-500 font-bold text-white shadow-lg shadow-indigo-500/25">◈</span><span className="font-bold tracking-tight text-slate-950">deadstock<span className="text-indigo-600">.</span></span>
         <nav className="flex flex-1 gap-4 text-sm">
           {(user?.role === 'VENDOR' || user?.role === 'ADMIN') && (
             <>
@@ -40,15 +40,15 @@ export function AppLayout() {
           </NavLink>
         </nav>
         <div className="flex items-center gap-3 text-sm">
-          <span className="text-slate-600">
+          <span className="hidden text-slate-600 sm:inline">
             {user?.name} <span className="text-slate-400">({user?.role})</span>
           </span>
           <Button type="button" variant="secondary" onClick={handleLogout}>
             Log out
           </Button>
         </div>
-      </header>
-      <main className="p-6">
+      </div></header>
+      <main className="mx-auto max-w-7xl p-5 sm:p-8">
         <Outlet />
       </main>
     </div>

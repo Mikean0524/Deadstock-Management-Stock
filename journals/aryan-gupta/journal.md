@@ -26,8 +26,6 @@
 
 ## Week 6 (Sep 7 - Sep 13): Backend Prototype Implementation
 
-### Aryan's Work Timeline
-
 - Sep 8, 09:00 - Reviewed the project documents, repository structure, and Person 2 backend responsibilities.
 - Sep 8, 11:00 - Added the shared Prisma schema, relations, enums, indexes, and PostgreSQL migration.
 - Sep 8, 12:00 - Added JWT authentication, role middleware, register/login/me endpoints, and bcrypt password hashing.
